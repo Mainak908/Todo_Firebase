@@ -4,9 +4,9 @@ import { db } from './firebase-config';
 import firebase from "firebase/compat/app"
 import { useEffect } from 'react';
 import React from 'react';
+import Todoo from './Todoo';
 
 function App() {
-
   const [data, setdata] = useState("");
   const [allDocs, setAllDocs] = useState([]);
   useEffect(() => {
@@ -24,24 +24,11 @@ function App() {
     })
     
   }
-  // const getTodo = () => {
-  //   db.collection("Todo")
-  //     .get()
-  //     .then((snapshot) => {
-  //       if (snapshot.docs.length > 0) {
-  //         snapshot.docs.forEach((doc) => {
-  //           setAllDocs((prev) => {
-  //             return [...prev, doc.data()]
-  //           })
-  //         })
-  //       }
-  //     })
-  // }
   const getTodo = () => {
     db.collection("Todo")
     .onSnapshot(function(querySnapshot){
       setAllDocs(
-        querySnapshot.docs.map((doc)=>({
+        querySnapshot.docs.map((doc)=>({  //here receiving doc is an object it has id,todo
           id:doc.id,
           todo:doc.data().todo
         }))
@@ -51,24 +38,19 @@ function App() {
 
   return (
     <>
-      <h3>TODO APP</h3>
+      <h3 style={{color: "red",textAlign:'center'}}>TODO APP</h3>
       <div className="nothing">
         <input className="form-control" type="text" value={data} onChange={randomfunc} label="readonly input example"></input>
         <input className="btn btn-primary" type="submit" onClick={addTodo} value="save"></input>
       </div>
       <h1>FETCHING DATA</h1>
 
-      {allDocs.map((doc,i) => {
+      {allDocs.map((doc,i) => { //here doc is array of object
         return (
-          <div key={i}>
-            <h5>{doc.todo}</h5>
-          </div>
+         <Todoo key={i} doc={doc.todo} id={doc.id}/>
+           
         )
       })}
-
-      
-
-
     </>
   );
 }
